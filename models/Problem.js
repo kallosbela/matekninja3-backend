@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const problemSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ['multiple_choice', 'short_answer'],
+    enum: ['multiple_choice', 'open_ended', 'true_false', 'fill_blank'],
     required: true
   },
   topic: {
@@ -17,22 +17,27 @@ const problemSchema = new mongoose.Schema({
     trim: true
   },
   answer: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed, // Can be String or Array of Strings
     required: true,
-    trim: true
+    validate: {
+      validator: function (answer) {
+        if (Array.isArray(answer)) {
+          return answer.length > 0 && answer.every(a => typeof a === 'string' && a.trim().length > 0);
+        }
+        return typeof answer === 'string' && answer.trim().length > 0;
+      },
+      message: 'Answer must be a non-empty string or array of non-empty strings'
+    }
   },
   wrongAnswers: {
     type: [String],
     default: [],
     validate: {
       validator: function (answers) {
-        // For multiple choice, we need at least 2 wrong answers
-        if (this.type === 'multiple_choice') {
-          return answers && answers.length >= 2;
-        }
-        return true;
+        // For multiple choice, we should have some wrong answers (but not mandatory)
+        return true; // Make it more flexible - teachers can add wrong answers optionally
       },
-      message: 'Multiple choice questions must have at least 2 wrong answers'
+      message: 'Wrong answers should be valid strings'
     }
   },
   img: {
