@@ -12,8 +12,15 @@ const assignmentRoutes = require('./routes/assignmentRoutes');
 
 const app = express();
 
-// Connect to database
-connectDB();
+// Connect to database with error handling
+if (process.env.MONGO_URI) {
+  connectDB().catch(err => {
+    console.error('Failed to connect to MongoDB:', err.message);
+    // Continue without database for now
+  });
+} else {
+  console.log('MONGO_URI not found, running without database');
+}
 
 // Middleware
 app.use(cors({
