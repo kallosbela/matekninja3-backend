@@ -96,6 +96,17 @@ const seedDatabase = async () => {
         createdBy: teacher1._id,
         difficulty: 'medium',
         points: 3
+      },
+      {
+        type: 'multiple_choice',
+        topic: 'algebra',
+        question: 'Az alábbi ábra alapján melyik egyenlet írja le a függvényt?',
+        answer: '$y = 2x + 1$',
+        wrongAnswers: ['$y = x + 2$', '$y = 3x - 1$', '$y = -x + 3$'],
+        imgUrl: 'https://www.mathsisfun.com/definitions/images/linear-function.svg',
+        createdBy: teacher1._id,
+        difficulty: 'medium',
+        points: 4
       }
     ]);
 
@@ -128,6 +139,17 @@ const seedDatabase = async () => {
         createdBy: teacher2._id,
         difficulty: 'medium',
         points: 3
+      },
+      {
+        type: 'multiple_choice',
+        topic: 'geometria',
+        question: 'Az ábrán látható sokszög neve és szögeinek összege?',
+        answer: 'Hatszög, $720°$',
+        wrongAnswers: ['Ötszög, $540°$', 'Hétszög, $900°$', 'Nyolcszög, $1080°$'],
+        imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Regular_hexagon.svg/200px-Regular_hexagon.svg.png',
+        createdBy: teacher2._id,
+        difficulty: 'hard',
+        points: 5
       }
     ]);
 
