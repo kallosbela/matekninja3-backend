@@ -8,8 +8,10 @@ const connectDB = require('../config/database');
 
 const seedDatabase = async () => {
   try {
-    // Kapcsolódás az adatbázishoz
-    await connectDB();
+    // Kapcsolódás az adatbázishoz (ha még nincs)
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
     
     console.log('🌱 Database seeding started...');
 
@@ -260,10 +262,12 @@ const seedDatabase = async () => {
   } catch (error) {
     console.error('❌ Database seeding error:', error);
   } finally {
-    // Kapcsolat bezárása
-    await mongoose.connection.close();
-    console.log('🔌 Database connection closed');
-    process.exit(0);
+    // Kapcsolat bezárása csak ha scriptként fut
+    if (require.main === module) {
+      await mongoose.connection.close();
+      console.log('🔌 Database connection closed');
+      process.exit(0);
+    }
   }
 };
 

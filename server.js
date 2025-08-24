@@ -9,6 +9,7 @@ const problemRoutes = require('./routes/problemRoutes');
 const resultRoutes = require('./routes/resultRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
+const seedRoutes = require('./routes/seedRoutes');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/api/problems', problemRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/assignments', assignmentRoutes);
+app.use('/api/seed', seedRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
