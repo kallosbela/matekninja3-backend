@@ -11,22 +11,22 @@ router.post('/', async (req, res) => {
     console.log('🌱 Starting database seeding via API...');
     console.log('MongoDB URI:', process.env.MONGO_URI ? 'Set' : 'Not set');
     console.log('Connection state:', require('mongoose').connection.readyState);
-    
+
     const mongoose = require('mongoose');
     const User = require('../models/User');
     const Problem = require('../models/Problem');
     const Assignment = require('../models/Assignment');
     const Result = require('../models/Result');
-    
+
     // Ensure we're connected
     if (mongoose.connection.readyState !== 1) {
       console.log('⚠️ MongoDB not connected, attempting to connect...');
       const connectDB = require('../config/database');
       await connectDB();
     }
-    
+
     console.log('✅ MongoDB connection ready');
-    
+
     // Clear existing data
     console.log('🧹 Clearing existing data...');
     await User.deleteMany({});
@@ -97,9 +97,9 @@ router.post('/', async (req, res) => {
     // Verify data
     const userCount = await User.countDocuments();
     const problemCount = await Problem.countDocuments();
-    
+
     console.log(`📊 Final count - Users: ${userCount}, Problems: ${problemCount}`);
-    
+
     res.json({
       success: true,
       message: 'Database seeded successfully! Data verified.',
@@ -154,16 +154,16 @@ router.get('/info', (req, res) => {
 router.get('/check', async (req, res) => {
   try {
     const mongoose = require('mongoose');
-    
+
     // Check basic connection info first
     const connectionState = mongoose.connection.readyState;
     const stateNames = ['disconnected', 'connected', 'connecting', 'disconnecting'];
-    
+
     console.log('🔍 Database check started');
     console.log('Connection state:', stateNames[connectionState]);
     console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
     console.log('MONGO_URI preview:', process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 50) + '...' : 'NOT SET');
-    
+
     // Return basic info if not connected
     if (connectionState !== 1) {
       return res.json({
@@ -185,30 +185,30 @@ router.get('/check', async (req, res) => {
         }
       });
     }
-    
+
     // If connected, try to get basic info with timeout
     const User = require('../models/User');
     const Problem = require('../models/Problem');
-    
+
     // Use Promise.race for timeout
-    const timeout = new Promise((_, reject) => 
+    const timeout = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Database operation timeout')), 5000)
     );
-    
+
     const userCount = await Promise.race([
       User.countDocuments(),
       timeout
     ]);
-    
+
     const problemCount = await Promise.race([
       Problem.countDocuments(),
       timeout
     ]);
-    
+
     // Get collections
     const collections = await mongoose.connection.db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
-    
+
     res.json({
       success: true,
       message: 'Database connected and working',
@@ -230,7 +230,7 @@ router.get('/check', async (req, res) => {
         }
       }
     });
-    
+
   } catch (error) {
     console.error('❌ Database check error:', error);
     res.status(500).json({

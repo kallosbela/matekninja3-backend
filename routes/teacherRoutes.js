@@ -1,34 +1,32 @@
 const express = require('express');
 const router = express.Router();
+const {
+  getStudents,
+  createProblem,
+  getMyProblems,
+  bulkUploadProblems,
+  createAssignment,
+  getMyAssignments,
+  getAssignmentResults
+} = require('../controllers/teacherController');
+const authMiddleware = require('../middleware/authMiddleware');
+const teacherMiddleware = require('../middleware/teacherMiddleware');
 
-// Placeholder routes for Railway deployment
-router.post('/problems', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Teacher problem creation endpoint - Coming soon!' 
-  });
-});
+// Apply auth and teacher middleware to all routes
+router.use(authMiddleware);
+router.use(teacherMiddleware);
 
-router.post('/problems/bulk', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Teacher bulk upload endpoint - Coming soon!' 
-  });
-});
+// Student management
+router.get('/students', getStudents);
 
-router.post('/assignments', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Teacher assignment creation endpoint - Coming soon!' 
-  });
-});
+// Problem management
+router.post('/problems', createProblem);
+router.get('/problems', getMyProblems);
+router.post('/problems/bulk', bulkUploadProblems);
 
-router.get('/students', (req, res) => {
-  res.json({ 
-    success: true, 
-    message: 'Students list endpoint - Coming soon!',
-    data: { students: [] }
-  });
-});
+// Assignment management
+router.post('/assignments', createAssignment);
+router.get('/assignments', getMyAssignments);
+router.get('/assignments/:id/results', getAssignmentResults);
 
 module.exports = router;

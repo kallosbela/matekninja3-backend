@@ -24,7 +24,7 @@ if (process.env.MONGO_URI) {
 }
 
 // Middleware
-const allowedOrigins = process.env.FRONTEND_URL 
+const allowedOrigins = process.env.FRONTEND_URL
   ? [process.env.FRONTEND_URL]
   : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:8080'];
 
