@@ -1,20 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const {
+  getMyAssignments,
+  getAssignmentById
+} = require('../controllers/assignmentController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-// Placeholder routes for Railway deployment
-router.get('/', (req, res) => {
-  res.json({ 
-    success: true, 
-    message: 'User assignments endpoint - Coming soon!',
-    data: { assignments: [] }
-  });
-});
+// Apply auth middleware to all routes
+router.use(authMiddleware);
 
-router.get('/:id', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Assignment detail endpoint - Coming soon!' 
-  });
-});
+// Get assignments assigned to current user
+router.get('/', getMyAssignments);
+
+// Get specific assignment details
+router.get('/:id', getAssignmentById);
 
 module.exports = router;

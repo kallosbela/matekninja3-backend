@@ -44,6 +44,19 @@ const problemSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  imgUrl: {
+    type: String,
+    trim: true,
+    validate: {
+      validator: function (url) {
+        if (!url) return true; // Optional field
+        // Basic URL validation
+        const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+        return urlRegex.test(url);
+      },
+      message: 'Please provide a valid image URL'
+    }
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

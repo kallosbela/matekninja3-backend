@@ -28,7 +28,7 @@ const getStudents = async (req, res) => {
 // Create a new problem
 const createProblem = async (req, res) => {
   try {
-    const { type, topic, question, answer, wrongAnswers, img, difficulty, points } = req.body;
+    const { type, topic, question, answer, wrongAnswers, img, imgUrl, difficulty, points } = req.body;
 
     if (!type || !topic || !question || !answer) {
       return res.status(400).json({
@@ -44,6 +44,7 @@ const createProblem = async (req, res) => {
       answer,
       wrongAnswers: wrongAnswers || [],
       img,
+      imgUrl,
       createdBy: req.user.id,
       difficulty: difficulty || 'medium',
       points: points || 10
