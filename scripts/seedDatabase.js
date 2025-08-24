@@ -79,7 +79,7 @@ const seedDatabase = async () => {
         points: 1
       },
       {
-        type: 'short_answer',
+        type: 'open_ended',
         topic: 'algebra',
         question: 'Oldja meg az egyenletet: $3x - 5 = 16$',
         answer: '7',
@@ -113,7 +113,7 @@ const seedDatabase = async () => {
     // 3. Geometria feladatok létrehozása
     const geometryProblems = await Problem.create([
       {
-        type: 'short_answer',
+        type: 'open_ended',
         topic: 'geometria',
         question: 'Mennyi egy négyzet területe, ha az oldala 5 cm?',
         answer: '25',
@@ -132,7 +132,7 @@ const seedDatabase = async () => {
         points: 2
       },
       {
-        type: 'short_answer',
+        type: 'open_ended',
         topic: 'geometria',
         question: 'Egy derékszögű háromszög befogói 3 cm és 4 cm. Mennyi az átfogó hossza?',
         answer: '5',
@@ -166,7 +166,7 @@ const seedDatabase = async () => {
         points: 1
       },
       {
-        type: 'short_answer',
+        type: 'open_ended',
         topic: 'számtan',
         question: 'Mennyi 125 ÷ 5?',
         answer: '25',
