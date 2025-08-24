@@ -1,26 +1,22 @@
 const express = require('express');
+const { register, login, getMe } = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
+
 const router = express.Router();
 
-// Placeholder routes for Railway deployment
-router.post('/register', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Auth routes not fully implemented yet. Coming soon!' 
-  });
-});
+// @route   POST /api/auth/register
+// @desc    Register a new user
+// @access  Public
+router.post('/register', register);
 
-router.post('/login', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Auth routes not fully implemented yet. Coming soon!' 
-  });
-});
+// @route   POST /api/auth/login
+// @desc    Login user
+// @access  Public
+router.post('/login', login);
 
-router.get('/me', (req, res) => {
-  res.json({ 
-    success: false, 
-    message: 'Auth routes not fully implemented yet. Coming soon!' 
-  });
-});
+// @route   GET /api/auth/me
+// @desc    Get current user
+// @access  Private
+router.get('/me', authMiddleware, getMe);
 
 module.exports = router;
