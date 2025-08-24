@@ -12,8 +12,8 @@ const assignmentRoutes = require('./routes/assignmentRoutes');
 
 const app = express();
 
-// Connect to database
-connectDB();
+// Connect to database (disabled for initial deployment)
+// connectDB();
 
 // Middleware
 app.use(cors({
