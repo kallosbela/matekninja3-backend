@@ -154,57 +154,94 @@ router.get('/info', (req, res) => {
 router.get('/check', async (req, res) => {
   try {
     const mongoose = require('mongoose');
-    const User = require('../models/User');
-    const Problem = require('../models/Problem');
-    const Assignment = require('../models/Assignment');
-    const Result = require('../models/Result');
     
-    // Check connection
+    // Check basic connection info first
     const connectionState = mongoose.connection.readyState;
     const stateNames = ['disconnected', 'connected', 'connecting', 'disconnecting'];
     
-    // Count documents
-    const userCount = await User.countDocuments();
-    const problemCount = await Problem.countDocuments();
-    const assignmentCount = await Assignment.countDocuments();
-    const resultCount = await Result.countDocuments();
+    console.log('🔍 Database check started');
+    console.log('Connection state:', stateNames[connectionState]);
+    console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
+    console.log('MONGO_URI preview:', process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 50) + '...' : 'NOT SET');
+    
+    // Return basic info if not connected
+    if (connectionState !== 1) {
+      return res.json({
+        success: false,
+        message: 'Database not connected',
+        data: {
+          connection: {
+            state: stateNames[connectionState] || 'unknown',
+            stateCode: connectionState,
+            host: mongoose.connection.host || 'unknown',
+            name: mongoose.connection.name || 'unknown'
+          },
+          environment: {
+            mongoUri: process.env.MONGO_URI ? 'Set (first 50 chars): ' + process.env.MONGO_URI.substring(0, 50) : 'NOT SET',
+            nodeEnv: process.env.NODE_ENV,
+            port: process.env.PORT
+          },
+          suggestion: 'Check MONGO_URI environment variable in Railway dashboard'
+        }
+      });
+    }
+    
+    // If connected, try to get basic info with timeout
+    const User = require('../models/User');
+    const Problem = require('../models/Problem');
+    
+    // Use Promise.race for timeout
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database operation timeout')), 5000)
+    );
+    
+    const userCount = await Promise.race([
+      User.countDocuments(),
+      timeout
+    ]);
+    
+    const problemCount = await Promise.race([
+      Problem.countDocuments(),
+      timeout
+    ]);
     
     // Get collections
     const collections = await mongoose.connection.db.listCollections().toArray();
     const collectionNames = collections.map(col => col.name);
     
-    // Sample users
-    const sampleUsers = await User.find({}).limit(3).select('username email role');
-    
     res.json({
       success: true,
-      message: 'Database status check',
+      message: 'Database connected and working',
       data: {
         connection: {
-          state: stateNames[connectionState] || 'unknown',
+          state: stateNames[connectionState],
           stateCode: connectionState,
           host: mongoose.connection.host,
           name: mongoose.connection.name
         },
         counts: {
           users: userCount,
-          problems: problemCount,
-          assignments: assignmentCount,
-          results: resultCount
+          problems: problemCount
         },
         collections: collectionNames,
-        sampleUsers: sampleUsers,
         environment: {
-          mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set',
+          mongoUri: 'Connected successfully',
           nodeEnv: process.env.NODE_ENV
         }
       }
     });
+    
   } catch (error) {
+    console.error('❌ Database check error:', error);
     res.status(500).json({
       success: false,
       message: 'Database check failed',
-      error: error.message
+      error: error.message,
+      details: {
+        connectionState: require('mongoose').connection.readyState,
+        mongoUri: process.env.MONGO_URI ? 'Set' : 'Not set',
+        host: require('mongoose').connection.host || 'unknown'
+      }
     });
   }
 });
